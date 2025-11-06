@@ -11,34 +11,66 @@ namespace Play
     {
         static void Main(string[] args)
         {
-            Console.Write("Здраствуйте, дорогой игрок. \nТанки на выбор: \n 1. Panther D \n 2. T34-85 \n 3. M4 Sherman \nВыберите технику: ");
+            // Инициализация переменных
+            int tank_selection;
+            int map_selection = 0;
+            bool trigger1 = true;
+            bool trigger2 = true;
+            Tank TankPlayer = null;
+            /*
+            Console.Write("Здраствуйте, дорогой игрок. \nТанки на выбор: \n 1. Panther D \n 2. T34-85 \n 3. M4 Sherman \n\nВыберите технику: ");
 
-            bool trigger = true;
-
-            while (trigger)
+            while (trigger1)
             {
-                int tank_selection = Convert.ToInt32(Console.ReadLine());
+                tank_selection = Convert.ToInt32(Console.ReadLine());
                 switch (tank_selection)
                 {
                     case 1:
-                        Console.WriteLine("Вы выбрали Panther D");
-                        trigger = false;
+                        TankPlayer = new Panther_D();
+                        trigger1 = false;
                         break;
                     case 2:
-                        Console.WriteLine("Вы выбрали T34-85");
-                        trigger = false;
+                        TankPlayer = new T34_85();
+                        trigger1 = false;
                         break;
                     case 3:
-                        Console.WriteLine("Вы выбрали M4 Sherman");
-                        trigger = false;
+                        TankPlayer = new M4_Sherman();
+                        trigger1 = false;
                         break;
                     default:
                         Console.Write("Некорректный ввод. Выберите ещё раз: ");
                         break;
 
+
+                }
+            }
+            Console.WriteLine();
+            
+            if (TankPlayer != null) 
+            {
+                Console.WriteLine($"Вы выбрали {TankPlayer.Name}\nХарактеристики:\n Здоровье - {TankPlayer.HP}\n Урон - {TankPlayer.Damage}\n");
+            }
+            */
+            Console.Write("Карты: \n 1.Берлин \n\n Выберите карту: ");
+
+            while (trigger2)
+            {
+                map_selection = Convert.ToInt32(Console.ReadLine());
+
+                switch (map_selection) 
+                {
+                    case 1:
+                        trigger2 = false;
+                        break;
+                    default:
+                        Console.Write("Некорректный ввод. Выберите ещё раз: ");
+                        break;
                 }
             }
 
+            //if (map_selection )
+
+           
             Console.ReadKey();
 
         }
@@ -48,6 +80,7 @@ namespace Play
     {
         public abstract class Tank
         {
+            public abstract string Name { get; set;  }
             public abstract int HP { get; protected set; }
             public abstract int Damage { get; protected set; }
 
@@ -61,8 +94,16 @@ namespace Play
 
         public class T34_85 : Tank
         {
+            private string _name = "T34-85";
             private int _hp = 100;
             private int _damage = 15;
+
+            public override string Name 
+            {
+                get => _name;
+                set => _name = value;
+            }
+
             public override int HP 
             { 
                 get => _hp; 
@@ -84,8 +125,16 @@ namespace Play
         }
         public class Panther_D : Tank
         {
+            private string _name = "Panther D";
             private int _hp = 120;
             private int _damage = 25;
+
+            public override string Name
+            {
+                get => _name;
+                set => _name = value;
+            }
+
             public override int HP
             {
                 get => _hp;
@@ -107,8 +156,16 @@ namespace Play
         }
         public class M4_Sherman : Tank
         {
+            private string _name = "M4 Sherman";
             private int _hp = 140;
             private int _damage = 10;
+
+            public override string Name
+            {
+                get => _name;
+                set => _name = value;
+            }
+
             public override int HP
             {
                 get => _hp;
@@ -133,10 +190,7 @@ namespace Play
 
     namespace system_void 
     {
-        public static void Registration() 
-        {
-        
-        }
+       
     }
     
 }
