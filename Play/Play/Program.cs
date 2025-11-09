@@ -85,7 +85,6 @@ namespace Play
                 }
             }
             Loading(3000);
-            Console.WriteLine();
 
             // Подготовка к катке
             if (map_selection == 1)
@@ -98,7 +97,7 @@ namespace Play
                 switch (line_selection) 
                 {
                     case 1:
-                        EventBerlin1(TankPlayer);
+                        MapPlayer.EventBerlin1(TankPlayer);
                         break;
                 }
             }
@@ -164,14 +163,6 @@ namespace Play
         public static void Game_Information(Tank tank, Map map, int line) 
         {
             Console.WriteLine($"Танк: {tank.Name}\nХарактеристики:\n Здоровье - {tank.HP}\n Урон - {tank.Damage}\nКарта: {map.Name}\nЛиния: {line}");
-        }
-
-        //Игровой процесс
-
-        //События Берлина
-        public static void EventBerlin1(Tank tank) 
-        {
-            
         }
 
     }
@@ -334,6 +325,11 @@ namespace Play
             { 
                 get => _count_lines; 
                 set => _count_lines = value; 
+            }
+
+            public void EventBerlin1(Tank tank)
+            {
+
             }
         }
     }
