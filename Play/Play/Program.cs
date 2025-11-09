@@ -16,6 +16,9 @@ namespace Play
             //Расцветка консоли
             Console.ForegroundColor = ConsoleColor.Green;
 
+            Tank a = new Panther_D();
+            a = Start_Tank(a);
+
             //Старт игры
             Start();
             Loading(5000);
@@ -97,15 +100,15 @@ namespace Play
                 switch (line_selection) 
                 {
                     case 1:
-                        MapPlayer.EventBerlin1(TankPlayer);
+                        //EventBerlin1(TankPlayer);
                         break;
                 }
             }
-
+            
 
             //Расцветка консоли
             Console.ForegroundColor = ConsoleColor.White;
-            Console.ReadKey();
+            Console.ReadKey(); 
 
 
         }
@@ -164,7 +167,68 @@ namespace Play
         {
             Console.WriteLine($"Танк: {tank.Name}\nХарактеристики:\n Здоровье - {tank.HP}\n Урон - {tank.Damage}\nКарта: {map.Name}\nЛиния: {line}");
         }
+        public static void Mini_Game_Information(Tank tank)
+        {
+            Console.WriteLine($"Танк: {tank.Name}\nХарактеристики:\n Здоровье - {tank.HP}\n Урон - {tank.Damage}\n Состояния двигателя - {tank.Engine_Сondition}");
+        }
 
+        // Игровой процесс 
+
+        // Управление танка
+        public Tank Start_Tank(Tank tank) 
+        {
+            Random random = new Random();
+            int trigger = random.Next(0, 5);
+            int selection = 0;
+            int count_selection = 0;
+
+            Console.WriteLine("Заведите двикатель:\n 1.Вкл. Двигатель\n 2.Стоять на месте\n 3. Характеристики");
+
+            while(true) 
+            {
+                Console.Write("Выбор: ");
+                selection = Convert.ToInt32(Console.ReadLine());
+
+                if (selection == 1) 
+                {
+                    tank.Turn_On_The_Engine(tank);
+                    break;
+                }
+                else if (selection == 2) 
+                {
+                    count_selection++;
+                    if (count_selection == trigger) 
+                    {
+                        Console.WriteLine("С неба привет!");
+                        Thread.Sleep(1000);
+                        Console.WriteLine("Игра окончена");
+                        Thread.Sleep(3000);
+                        Environment.Exit(0);
+                    }
+                }
+                else if(selection == 3) 
+                {
+                    Mini_Game_Information(tank);
+                }
+                else 
+                {
+                    Console.Write("Некорректный ввод, ведите ещё раз: ");
+                }
+
+            }
+
+            return tank;
+        }
+
+        // Карта Берлина
+        static void EventBerlin1(Tank tank)
+        {
+            
+            while (true) 
+            {
+                
+            }
+        }
     }
 
 
@@ -181,6 +245,10 @@ namespace Play
             public void Shot(Tank a, int damage) 
             {
                 a.HP -= damage;
+            }
+            public Tank Turn_On_The_Engine() 
+            {
+                this.Engine_Condition = true;
             }
 
         }
@@ -325,11 +393,6 @@ namespace Play
             { 
                 get => _count_lines; 
                 set => _count_lines = value; 
-            }
-
-            public void EventBerlin1(Tank tank)
-            {
-
             }
         }
     }
