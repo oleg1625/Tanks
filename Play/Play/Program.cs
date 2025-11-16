@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Play
 {
@@ -16,13 +17,11 @@ namespace Play
             //Расцветка консоли
             Console.ForegroundColor = ConsoleColor.Green;
 
-            Tank a = new Panther_D();
-            a = Start_Tank(a);
 
             //Старт игры
             Start();
             Loading(5000);
-
+            
             // Инициализация переменных
             int tank_selection;
             int map_selection = 0;
@@ -31,7 +30,7 @@ namespace Play
             bool trigger2 = true;
             Tank TankPlayer = null;
             Map MapPlayer = null;
-            
+
             //Выбор танка
             Console.Write("Здраствуйте, дорогой игрок. \nТанки на выбор: \n 1. Panther D \n 2. T34-85 \n 3. M4 Sherman \n\nВыберите технику: ");
 
@@ -61,8 +60,8 @@ namespace Play
             }
 
             Console.WriteLine();
-            
-            if (TankPlayer != null) 
+
+            if (TankPlayer != null)
             {
                 Console.WriteLine($"Вы выбрали {TankPlayer.Name}\nХарактеристики:\n Здоровье - {TankPlayer.HP}\n Урон - {TankPlayer.Damage}\n");
             }
@@ -76,7 +75,7 @@ namespace Play
             {
                 map_selection = Convert.ToInt32(Console.ReadLine());
 
-                switch (map_selection) 
+                switch (map_selection)
                 {
                     case 1:
                         MapPlayer = new Berlin();
@@ -96,19 +95,22 @@ namespace Play
                 Loading(1000);
                 Game_Information(TankPlayer, MapPlayer, line_selection);
                 Enter();
+                Loading(1000);
 
-                switch (line_selection) 
+                switch (line_selection)
                 {
                     case 1:
-                        //EventBerlin1(TankPlayer);
+                        if (MapPlayer.Name == "Берлин")
+                        {
+                            EventBerlin1(TankPlayer);
+                        }
                         break;
                 }
             }
-            
 
             //Расцветка консоли
             Console.ForegroundColor = ConsoleColor.White;
-            Console.ReadKey(); 
+            Console.ReadKey();
 
 
         }
@@ -133,15 +135,15 @@ namespace Play
             Thread.Sleep(5000);
             Console.Clear();
         }
-        public static int Line_selection(Map map) 
+        public static int Line_selection(Map map)
         {
             Console.Write($"Вы выбрали карту {map.Name}, линий на этой карте {map.Count_Lines}. \nВыберите на какой линии вы будете играть: ");
 
-            while(true) 
+            while (true)
             {
                 int selection_player = Convert.ToInt32(Console.ReadLine());
 
-                if(selection_player > 0 && selection_player <= map.Count_Lines) 
+                if (selection_player > 0 && selection_player <= map.Count_Lines)
                 {
                     return selection_player;
                 }
@@ -149,7 +151,7 @@ namespace Play
                 Console.Write("Некорректный ввод. Выберите ещё раз: ");
             }
         }
-        public static void Loading(int time) 
+        public static void Loading(int time)
         {
             Console.Clear();
             Thread.Sleep(1000);
@@ -157,13 +159,13 @@ namespace Play
             Thread.Sleep(time);
             Console.Clear();
         }
-        public static void Enter() 
+        public static void Enter()
         {
             Console.WriteLine("Нажмите Enter чтобы продолжить");
             Console.ReadLine();
             Console.Clear();
         }
-        public static void Game_Information(Tank tank, Map map, int line) 
+        public static void Game_Information(Tank tank, Map map, int line)
         {
             Console.WriteLine($"Танк: {tank.Name}\nХарактеристики:\n Здоровье - {tank.HP}\n Урон - {tank.Damage}\nКарта: {map.Name}\nЛиния: {line}");
         }
@@ -172,33 +174,34 @@ namespace Play
             Console.WriteLine($"Танк: {tank.Name}\nХарактеристики:\n Здоровье - {tank.HP}\n Урон - {tank.Damage}\n Состояния двигателя - {tank.Engine_Сondition}");
         }
 
-        // Игровой процесс 
-
         // Управление танка
-        public Tank Start_Tank(Tank tank) 
+        public static void Start_Tank(Tank tank)
         {
             Random random = new Random();
-            int trigger = random.Next(0, 5);
+            int trigger = random.Next(1, 5);
             int selection = 0;
             int count_selection = 0;
 
             Console.WriteLine("Заведите двикатель:\n 1.Вкл. Двигатель\n 2.Стоять на месте\n 3. Характеристики");
 
-            while(true) 
+            while (true)
             {
                 Console.Write("Выбор: ");
                 selection = Convert.ToInt32(Console.ReadLine());
 
-                if (selection == 1) 
+                if (selection == 1)
                 {
                     tank.Turn_On_The_Engine(tank);
+                    Console.WriteLine("Двигатель заведен.");
                     break;
                 }
-                else if (selection == 2) 
+                else if (selection == 2)
                 {
+                    Console.WriteLine("Вы стоите на месте.");
                     count_selection++;
-                    if (count_selection == trigger) 
+                    if (count_selection == trigger)
                     {
+                        Thread.Sleep(1000);
                         Console.WriteLine("С неба привет!");
                         Thread.Sleep(1000);
                         Console.WriteLine("Игра окончена");
@@ -206,30 +209,205 @@ namespace Play
                         Environment.Exit(0);
                     }
                 }
-                else if(selection == 3) 
+                else if (selection == 3)
                 {
                     Mini_Game_Information(tank);
                 }
-                else 
+                else
                 {
                     Console.Write("Некорректный ввод, ведите ещё раз: ");
                 }
 
             }
 
-            return tank;
+            Console.WriteLine();
         }
 
+        // Боевые действия
+        static void Point_A_Berlin_Tank_Battle(Tank tank)
+        {
+            Random rand = new Random();
+            int count_tanks = rand.Next(1, 3);
+            Tank enemy_tank1 = null;
+            Tank enemy_tank2 = null;
+
+            if (count_tanks == 1)
+            {
+                enemy_tank1 = new Marder_II();
+                int shot_chance = rand.Next(1, 3);
+
+                Console.WriteLine($"Нас вас выехал {enemy_tank1.Name}");
+                Console.WriteLine();
+                Thread.Sleep(1000);
+                if (shot_chance == 1)
+                {
+                    enemy_tank1.Shot(tank, enemy_tank1.Damage);
+                    Console.WriteLine($"По вам был произведен выстирел\nВаше здоровье: {tank.HP}");
+                }
+                while (enemy_tank1.HP != 0)
+                {
+                    if(tank.HP == 0) 
+                    {
+                        Console.WriteLine($"{tank.Name} уничтожен!");
+                        Environment.Exit(0);
+                    }
+
+                    int selection_battle = 0;
+                    Console.WriteLine();
+                    Console.Write("Ваши действия:\n 1.Открыть огонь\n 2.Отступить\n 3.Просмотреть характеристики\nВыбор: ");
+
+                    selection_battle = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine();
+
+                    if (selection_battle == 1)
+                    {
+                        Console.WriteLine("Выстерл!");
+                        Console.WriteLine();
+                        tank.Shot(enemy_tank1, tank.Damage);
+
+                        Thread.Sleep(1000);
+
+                        shot_chance = rand.Next(1, 3);
+
+                        if (shot_chance == 1)
+                        {
+                            enemy_tank1.Shot(tank, enemy_tank1.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy_tank1.Name}.");
+                        }
+
+
+                    }
+                    if (selection_battle == 2)
+                    {
+                        Console.WriteLine($"Вы отступили.{tank.Name} выжил. Задача не выполнена.");
+                        Environment.Exit(0);
+                    }
+                    if (selection_battle == 3)
+                    {
+                        Mini_Game_Information(tank);
+                        Console.WriteLine();
+                    }
+                }
+
+
+
+            }
+
+            if (count_tanks == 2)
+            {
+                enemy_tank1 = new Marder_II();
+                enemy_tank2 = new Pz_Kpfw_III();
+
+                int shot_chance = rand.Next(1, 3);
+
+                Console.WriteLine($"Нас вас выехал {enemy_tank1.Name} и {enemy_tank2.Name}");
+                Console.WriteLine();
+                Thread.Sleep(1000);
+                if (shot_chance == 1)
+                {
+                    enemy_tank1.Shot(tank, enemy_tank1.Damage);
+                    Console.WriteLine($"По вам был произведен выстирел\nВаше здоровье: {tank.HP}");
+                }
+                while (enemy_tank1.HP != 0 && enemy_tank2.HP != 0)
+                {
+                    if (tank.HP == 0)
+                    {
+                        Console.WriteLine($"{tank.Name} уничтожен!");
+                        Environment.Exit(0);
+                    }
+
+                    int selection_battle = 0;
+                    Console.WriteLine();
+                    Console.Write($"Ваши действия:\n 1.Открыть огонь по {enemy_tank1.Name}\n 2.Открыть огонь по {enemy_tank2.Name}\n 3.Отступить\n 4.просмотреть характеристики\nВыбор: ");
+
+                    selection_battle = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine();
+
+                    if (selection_battle == 1)
+                    {
+                        Console.WriteLine("Выстерл!");
+                        Console.WriteLine();
+                        tank.Shot(enemy_tank1, tank.Damage);
+
+                        Thread.Sleep(1000);
+
+                        shot_chance = rand.Next(1, 5);
+
+                        if (shot_chance == 1)
+                        {
+                            enemy_tank1.Shot(tank, enemy_tank1.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy_tank1.Name}.");
+                        }
+                        if (shot_chance == 2)
+                        {
+                            enemy_tank1.Shot(tank, enemy_tank2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy_tank2.Name}.");
+                        }
+                        if (shot_chance == 3)
+                        {
+                            enemy_tank1.Shot(tank, enemy_tank1.Damage);
+                            enemy_tank1.Shot(tank, enemy_tank2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy_tank1.Name} и {enemy_tank1.Name}.");
+                        }
+
+
+                    }
+                    if (selection_battle == 2)
+                    {
+                        Console.WriteLine("Выстерл!");
+                        Console.WriteLine();
+                        tank.Shot(enemy_tank2, tank.Damage);
+
+                        Thread.Sleep(1000);
+
+                        shot_chance = rand.Next(1, 5);
+
+                        if (shot_chance == 1)
+                        {
+                            enemy_tank1.Shot(tank, enemy_tank1.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy_tank1.Name}.");
+                        }
+                        if (shot_chance == 2)
+                        {
+                            enemy_tank1.Shot(tank, enemy_tank2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy_tank2.Name}.");
+                        }
+                        if (shot_chance == 3)
+                        {
+                            enemy_tank1.Shot(tank, enemy_tank1.Damage);
+                            enemy_tank1.Shot(tank, enemy_tank2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy_tank1.Name} и {enemy_tank1.Name}.");
+                        }
+
+
+                    }
+                    if (selection_battle == 3)
+                    {
+                        Console.WriteLine($"Вы отступили.{tank.Name} выжил. Задача не выполнена.");
+                        Environment.Exit(0);
+                    }
+                    if (selection_battle == 4)
+                    {
+                        Mini_Game_Information(tank);
+                        Console.WriteLine();
+                    }
+                }                
+            }
+
+            Console.WriteLine("Танки противника был уничтожены, задание выполнено!");
+        }
         // Карта Берлина
         static void EventBerlin1(Tank tank)
         {
-            
-            while (true) 
-            {
-                
-            }
+            Console.WriteLine("Игра началась! Задача захватить точку А");
+            Start_Tank(tank);
+            Thread.Sleep(1000);
+            Console.WriteLine("Вы едите к точке A.");
+            Thread.Sleep(1000);
+            Point_A_Berlin_Tank_Battle(tank);
         }
     }
+    
 
 
     //Папки
@@ -237,22 +415,22 @@ namespace Play
     {
         public abstract class Tank
         {
-            public abstract string Name { get; set;  }
+            public abstract string Name { get; set; }
             public abstract int HP { get; protected set; }
             public abstract int Damage { get; protected set; }
             public abstract bool Engine_Сondition { get; protected set; }
 
-            public void Shot(Tank a, int damage) 
+            public void Shot(Tank a, int damage)
             {
                 a.HP -= damage;
             }
-            public Tank Turn_On_The_Engine() 
+            public void Turn_On_The_Engine(Tank a)
             {
-                this.Engine_Condition = true;
+                a.Engine_Сondition = true;
             }
 
         }
-    
+
 
         public class T34_85 : Tank
         {
@@ -261,30 +439,37 @@ namespace Play
             private int _damage = 15;
             private bool _engine_condition = false;
 
-            public override string Name 
+            public override string Name
             {
                 get => _name;
                 set => _name = value;
             }
 
-            public override int HP 
-            { 
-                get => _hp; 
-                protected set 
+            public override int HP
+            {
+                get => _hp;
+                protected set
                 {
-                    _hp = value;        
-                } 
+                    if (value < 0) 
+                    {
+                        _hp = 0;
+                    }
+                    else 
+                    {
+                        _hp = value;
+                    }
+                }
             }
 
-            public override int Damage 
+            public override int Damage
             {
                 get => _damage;
-                protected set 
+                protected set
                 {
                     _damage = value;
                 }
             }
-            public override bool Engine_Сondition 
+            public override bool Engine_Сondition
             {
                 get => _engine_condition;
                 protected set => _engine_condition = value;
@@ -309,7 +494,14 @@ namespace Play
                 get => _hp;
                 protected set
                 {
-                    _hp = value;
+                    if (value < 0)
+                    {
+                        _hp = 0;
+                    }
+                    else
+                    {
+                        _hp = value;
+                    }
                 }
             }
 
@@ -347,7 +539,14 @@ namespace Play
                 get => _hp;
                 protected set
                 {
-                    _hp = value;
+                    if (value < 0)
+                    {
+                        _hp = 0;
+                    }
+                    else
+                    {
+                        _hp = value;
+                    }
                 }
             }
 
@@ -366,6 +565,94 @@ namespace Play
                 protected set => _engine_condition = value;
             }
 
+        }
+        public class Marder_II : Tank 
+        {
+            private string _name = "Marder II";
+            private int _hp = 25;
+            private int _damage = 40;
+            private bool _engine_condition = true;
+
+            public override string Name
+            {
+                get => _name;
+                set => _name = value;
+            }
+
+            public override int HP
+            {
+                get => _hp;
+                protected set
+                {
+                    if (value < 0)
+                    {
+                        _hp = 0;
+                    }
+                    else
+                    {
+                        _hp = value;
+                    }
+                }
+            }
+
+            public override int Damage
+            {
+                get => _damage;
+                protected set
+                {
+                    _damage = value;
+                }
+            }
+
+            public override bool Engine_Сondition
+            {
+                get => _engine_condition;
+                protected set => _engine_condition = value;
+            }
+        }
+        public class Pz_Kpfw_III : Tank
+        {
+            private string _name = "Pz.Kpfw. III ";
+            private int _hp = 35;
+            private int _damage = 5;
+            private bool _engine_condition = true;
+
+            public override string Name
+            {
+                get => _name;
+                set => _name = value;
+            }
+
+            public override int HP
+            {
+                get => _hp;
+                protected set
+                {
+                    if (value < 0)
+                    {
+                        _hp = 0;
+                    }
+                    else
+                    {
+                        _hp = value;
+                    }
+                }
+            }
+
+            public override int Damage
+            {
+                get => _damage;
+                protected set
+                {
+                    _damage = value;
+                }
+            }
+
+            public override bool Engine_Сondition
+            {
+                get => _engine_condition;
+                protected set => _engine_condition = value;
+            }
         }
 
     }
