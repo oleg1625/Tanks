@@ -1,5 +1,6 @@
 ﻿using Play.Maps;
 using Play.Tanks;
+using Play.Enemys;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,14 +106,14 @@ namespace Play
                             EventBerlin1(TankPlayer);
                         }
                         break;
+                    case 2:
+                        if (MapPlayer.Name == "Берлин")
+                        {
+                            EventBerlin2(TankPlayer);
+                        }
+                        break;
                 }
             }
-
-            //Расцветка консоли
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.ReadKey();
-
-
         }
 
         // Системные методы
@@ -182,7 +183,7 @@ namespace Play
             int selection = 0;
             int count_selection = 0;
 
-            Console.WriteLine("Заведите двикатель:\n 1.Вкл. Двигатель\n 2.Стоять на месте\n 3. Характеристики");
+            Console.WriteLine("Заведите двикатель:\n 1.Вкл. Двигатель\n 2.Стоять на месте\n 3.Характеристики");
 
             while (true)
             {
@@ -241,7 +242,7 @@ namespace Play
                 Thread.Sleep(1000);
                 if (shot_chance == 1)
                 {
-                    enemy_tank1.Shot(tank, enemy_tank1.Damage);
+                    enemy_tank1.Shot_on_Tank(tank, enemy_tank1.Damage);
                     Console.WriteLine($"По вам был произведен выстирел\nВаше здоровье: {tank.HP}");
                 }
                 while (enemy_tank1.HP != 0)
@@ -263,15 +264,17 @@ namespace Play
                     {
                         Console.WriteLine("Выстерл!");
                         Console.WriteLine();
-                        tank.Shot(enemy_tank1, tank.Damage);
+                        tank.Shot_on_Tank(enemy_tank1, tank.Damage);
 
                         Thread.Sleep(1000);
 
-                        shot_chance = rand.Next(1, 3);
-
-                        if (shot_chance == 1)
+                        if (enemy_tank1.HP == 0)
                         {
-                            enemy_tank1.Shot(tank, enemy_tank1.Damage);
+                            Console.WriteLine($"{enemy_tank1.Name} - уничтожен");
+                        }
+                        else
+                        {
+                            enemy_tank1.Shot_on_Tank(tank, enemy_tank1.Damage);
                             Console.WriteLine($"По вам был призведен выстрел от {enemy_tank1.Name}.");
                         }
 
@@ -286,6 +289,11 @@ namespace Play
                     {
                         Mini_Game_Information(tank);
                         Console.WriteLine();
+                    }
+
+                    if (enemy_tank1.HP == 0) 
+                    {
+                        Console.WriteLine($"{enemy_tank1.Name} уничтожен!");
                     }
                 }
 
@@ -305,10 +313,10 @@ namespace Play
                 Thread.Sleep(1000);
                 if (shot_chance == 1)
                 {
-                    enemy_tank1.Shot(tank, enemy_tank1.Damage);
-                    Console.WriteLine($"По вам был произведен выстирел\nВаше здоровье: {tank.HP}");
+                    enemy_tank1.Shot_on_Tank(tank, enemy_tank1.Damage);
+                    Console.WriteLine($"По вам был произведен выстрел\nВаше здоровье: {tank.HP}");
                 }
-                while (enemy_tank1.HP != 0 && enemy_tank2.HP != 0)
+                while (enemy_tank1.HP != 0 || enemy_tank2.HP != 0)
                 {
                     if (tank.HP == 0)
                     {
@@ -327,27 +335,32 @@ namespace Play
                     {
                         Console.WriteLine("Выстерл!");
                         Console.WriteLine();
-                        tank.Shot(enemy_tank1, tank.Damage);
+                        tank.Shot_on_Tank(enemy_tank1, tank.Damage);
 
                         Thread.Sleep(1000);
 
-                        shot_chance = rand.Next(1, 5);
-
-                        if (shot_chance == 1)
+                        if (enemy_tank1.HP == 0)
                         {
-                            enemy_tank1.Shot(tank, enemy_tank1.Damage);
+                            Console.WriteLine($"{enemy_tank1.Name} - уничтожен");
+                        }
+
+                        Thread.Sleep(1000);
+
+                        if (enemy_tank1.HP != 0 && enemy_tank2.HP != 0)
+                        {
+                            enemy_tank1.Shot_on_Tank(tank, enemy_tank1.Damage);
+                            enemy_tank1.Shot_on_Tank(tank, enemy_tank2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy_tank1.Name} и {enemy_tank2.Name}.");
+                        }
+                        else if (enemy_tank1.HP != 0) 
+                        {
+                            enemy_tank1.Shot_on_Tank(tank, enemy_tank1.Damage);
                             Console.WriteLine($"По вам был призведен выстрел от {enemy_tank1.Name}.");
                         }
-                        if (shot_chance == 2)
+                        else if(enemy_tank2.HP != 0) 
                         {
-                            enemy_tank1.Shot(tank, enemy_tank2.Damage);
+                            enemy_tank1.Shot_on_Tank(tank, enemy_tank2.Damage);
                             Console.WriteLine($"По вам был призведен выстрел от {enemy_tank2.Name}.");
-                        }
-                        if (shot_chance == 3)
-                        {
-                            enemy_tank1.Shot(tank, enemy_tank1.Damage);
-                            enemy_tank1.Shot(tank, enemy_tank2.Damage);
-                            Console.WriteLine($"По вам был призведен выстрел от {enemy_tank1.Name} и {enemy_tank1.Name}.");
                         }
 
 
@@ -356,27 +369,32 @@ namespace Play
                     {
                         Console.WriteLine("Выстерл!");
                         Console.WriteLine();
-                        tank.Shot(enemy_tank2, tank.Damage);
+                        tank.Shot_on_Tank(enemy_tank2, tank.Damage);
 
                         Thread.Sleep(1000);
 
-                        shot_chance = rand.Next(1, 5);
-
-                        if (shot_chance == 1)
+                        if (enemy_tank2.HP == 0)
                         {
-                            enemy_tank1.Shot(tank, enemy_tank1.Damage);
+                            Console.WriteLine($"{enemy_tank2.Name} - уничтожен");
+                        }
+
+                        Thread.Sleep(1000);
+
+                        if (enemy_tank1.HP != 0 && enemy_tank2.HP != 0)
+                        {
+                            enemy_tank1.Shot_on_Tank(tank, enemy_tank1.Damage);
+                            enemy_tank1.Shot_on_Tank(tank, enemy_tank2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy_tank1.Name} и {enemy_tank2.Name}.");
+                        }
+                        else if (enemy_tank1.HP != 0)
+                        {
+                            enemy_tank1.Shot_on_Tank(tank, enemy_tank1.Damage);
                             Console.WriteLine($"По вам был призведен выстрел от {enemy_tank1.Name}.");
                         }
-                        if (shot_chance == 2)
+                        else if (enemy_tank2.HP != 0)
                         {
-                            enemy_tank1.Shot(tank, enemy_tank2.Damage);
+                            enemy_tank1.Shot_on_Tank(tank, enemy_tank2.Damage);
                             Console.WriteLine($"По вам был призведен выстрел от {enemy_tank2.Name}.");
-                        }
-                        if (shot_chance == 3)
-                        {
-                            enemy_tank1.Shot(tank, enemy_tank1.Damage);
-                            enemy_tank1.Shot(tank, enemy_tank2.Damage);
-                            Console.WriteLine($"По вам был призведен выстрел от {enemy_tank1.Name} и {enemy_tank1.Name}.");
                         }
 
 
@@ -391,10 +409,624 @@ namespace Play
                         Mini_Game_Information(tank);
                         Console.WriteLine();
                     }
+
+                    if (enemy_tank1.HP == 0)
+                    {
+                        Console.WriteLine($"{enemy_tank1.Name} уничтожен!");
+                    }
+                    if (enemy_tank2.HP == 0)
+                    {
+                        Console.WriteLine($"{enemy_tank2.Name} уничтожен!");
+                    }
                 }                
             }
 
-            Console.WriteLine("Танки противника был уничтожены, задание выполнено!");
+            Console.WriteLine("Танки противника были уничтожены, задание выполнено!");
+        }
+        static void Point_B_Berlin_Tank_Battle(Tank tank) 
+        {
+            Random rand = new Random();
+            int number_of_combat_forces = rand.Next(1, 5);
+            Enemy enemy1 = null;
+            Enemy enemy2 = null;
+            Enemy enemy3 = null;
+            Enemy enemy4 = null;
+
+            if(number_of_combat_forces == 1) 
+            {
+                enemy1 = new Platoon_Of_Stormtroopers();
+                enemy2 = new Howitzer();
+                int selection_battle;
+
+                Console.WriteLine($"Вы едите по кварталу, командир заметил {enemy1.Name}");
+                Thread.Sleep(1000);
+                tank.Shot_on_Tank(tank, enemy2.Damage);
+                Console.WriteLine($"Из угла по вам выстрелела {enemy2.Name}.\nВаше здоровья: {tank.HP}");
+                Thread.Sleep(1000);
+
+                while (enemy1.HP != 0 || enemy2.HP != 0) 
+                {                    
+                    if (tank.HP == 0)
+                    {
+                        Console.WriteLine($"{tank.Name} уничтожен!");
+                        Environment.Exit(0);
+                    }
+
+                    Console.WriteLine();
+                    Console.Write($"Ваши действия:\n 1.Открыть огонь по {enemy1.Name}\n 2.Открыть огонь по {enemy2.Name}\n 3.Отступить\n 4.Просмотреть характеристики\nВыбор: ");
+                    selection_battle = Convert.ToInt32(Console.ReadLine());
+
+                    if (selection_battle == 1) 
+                    {
+                        Console.WriteLine("Выстерл!");
+                        Console.WriteLine();
+                        enemy1.Shot_on_Enemy(enemy1, tank.Damage);
+
+                        Thread.Sleep(1000);
+
+                        if (enemy1.HP == 0)
+                        {
+                            Console.WriteLine($"{enemy1.Name} - уничтожен");
+                        }
+
+                        Thread.Sleep(1000);
+
+                        if (enemy1.HP != 0 && enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name} и {enemy2.Name}.");
+                        }
+                        else if (enemy1.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name}.");
+                        }
+                        else if (enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy2.Name}.");
+                        }
+                    }
+                    if (selection_battle == 2) 
+                    {
+                        Console.WriteLine("Выстерл!");
+                        Console.WriteLine();
+                        enemy2.Shot_on_Enemy(enemy2, tank.Damage);
+
+                        Thread.Sleep(1000);
+
+                        if (enemy2.HP == 0)
+                        {
+                            Console.WriteLine($"{enemy2.Name} - уничтожен");
+                        }
+
+                        Thread.Sleep(1000);
+
+                        if (enemy1.HP != 0 && enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name} и {enemy2.Name}.");
+                        }
+                        else if (enemy1.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name}.");
+                        }
+                        else if (enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy2.Name}.");
+                        }
+                    }
+                    if(selection_battle == 3) 
+                    {
+                        Console.WriteLine($"Вы отступили.{tank.Name} выжил. Задача не выполнена.");
+                        Environment.Exit(0);
+                    }
+                    if (selection_battle == 4) 
+                    {
+                        Mini_Game_Information(tank);
+                        Console.WriteLine();
+                    }
+                }
+                Console.WriteLine("Противники были уничтожены, задание выполнено!");
+            }
+            if(number_of_combat_forces == 2) 
+            {
+                enemy1 = new Platoon_Of_Stormtroopers();
+                enemy2 = new Platoon_Of_Grenadiers();
+                int selection_battle;
+
+                Console.WriteLine($"Вы едите по кварталу, командир заметил {enemy1.Name} и {enemy2.Name}");
+                Thread.Sleep(1000);
+
+                while (enemy1.HP != 0 || enemy2.HP != 0) 
+                {
+                    if (tank.HP == 0)
+                    {
+                        Console.WriteLine($"{tank.Name} уничтожен!");
+                        Environment.Exit(0);
+                    }
+
+                    Console.WriteLine();
+                    Console.Write($"Ваши действия:\n 1.Открыть огонь по {enemy1.Name}\n 2.Открыть огонь по {enemy2.Name}\n 3.Отступить\n 4.Просмотреть характеристики\nВыбор: ");
+                    selection_battle = Convert.ToInt32(Console.ReadLine());
+
+                    if (selection_battle == 1)
+                    {
+                        Console.WriteLine("Выстерл!");
+                        Console.WriteLine();
+                        enemy1.Shot_on_Enemy(enemy1, tank.Damage);
+
+                        Thread.Sleep(1000);
+
+                        if (enemy1.HP == 0)
+                        {
+                            Console.WriteLine($"{enemy1.Name} - уничтожен");
+                        }
+
+                        Thread.Sleep(1000);
+
+                        if (enemy1.HP != 0 && enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name} и {enemy2.Name}.");
+                        }
+                        else if (enemy1.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name}.");
+                        }
+                        else if (enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy2.Name}.");
+                        }
+                    }
+                    if (selection_battle == 2)
+                    {
+                        Console.WriteLine("Выстерл!");
+                        Console.WriteLine();
+                        enemy2.Shot_on_Enemy(enemy2, tank.Damage);
+
+                        Thread.Sleep(1000);
+
+                        if (enemy2.HP == 0)
+                        {
+                            Console.WriteLine($"{enemy2.Name} - уничтожен");
+                        }
+
+                        Thread.Sleep(1000);
+
+                        if (enemy1.HP != 0 && enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name} и {enemy2.Name}.");
+                        }
+                        else if (enemy1.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name}.");
+                        }
+                        else if (enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy2.Name}.");
+                        }
+                    }
+                    if (selection_battle == 3)
+                    {
+                        Console.WriteLine($"Вы отступили.{tank.Name} выжил. Задача не выполнена.");
+                        Environment.Exit(0);
+                    }
+                    if (selection_battle == 4)
+                    {
+                        Mini_Game_Information(tank);
+                        Console.WriteLine();
+                    }
+
+                }
+                Console.WriteLine("Противники были уничтожены, задание выполнено!");
+            }
+            if (number_of_combat_forces == 3) 
+            {
+                enemy1 = new Platoon_Of_Stormtroopers();
+                enemy2 = new Howitzer();
+                enemy3 = new Platoon_Of_Grenadiers();
+                int selection_battle;
+
+                Console.WriteLine($"Вы едите по кварталу, командир заметил {enemy1.Name} и {enemy3.Name}");
+                Thread.Sleep(1000);
+                tank.Shot_on_Tank(tank, enemy2.Damage);
+                Console.WriteLine($"Из угла по вам выстрелела {enemy2.Name}.\nВаше здоровья: {tank.HP}");
+                Thread.Sleep(1000);
+
+                while (enemy1.HP != 0 || enemy2.HP != 0 || enemy3.HP != 0) 
+                {
+                    if (tank.HP == 0)
+                    {
+                        Console.WriteLine($"{tank.Name} уничтожен!");
+                        Environment.Exit(0);
+                    }
+
+                    Console.WriteLine();
+                    Console.Write($"Ваши действия:\n 1.Открыть огонь по {enemy1.Name}\n 2.Открыть огонь по {enemy2.Name}\n 3.Открыть огонь по {enemy3.Name}\n 4.Отступить\n 5.Просмотреть характеристики\nВыбор: ");
+                    selection_battle = Convert.ToInt32(Console.ReadLine());
+
+                    if (selection_battle == 1)
+                    {
+                        Console.WriteLine("Выстерл!");
+                        Console.WriteLine();
+                        enemy1.Shot_on_Enemy(enemy1, tank.Damage);
+
+                        Thread.Sleep(1000);
+
+                        if (enemy1.HP == 0)
+                        {
+                            Console.WriteLine($"{enemy1.Name} - уничтожен");
+                        }
+
+                        Thread.Sleep(1000);
+
+                        if (enemy1.HP != 0 && enemy2.HP != 0 && enemy3.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name}, {enemy2.Name} и {enemy3.Name}.");
+                        }
+                        else if (enemy1.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name}.");
+                        }
+                        else if (enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy2.Name}.");
+                        }
+                        else if (enemy3.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy2.Name}.");
+                        }
+                        else if (enemy1.HP != 0 && enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name} и {enemy2.Name}.");
+                        }
+                        else if (enemy1.HP != 0 && enemy3.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name} и {enemy3.Name}.");
+                        }
+                        else if (enemy3.HP != 0 && enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy3.Name} и {enemy2.Name}.");
+                        }
+
+                    }
+                    if (selection_battle == 2)
+                    {
+                        Console.WriteLine("Выстерл!");
+                        Console.WriteLine();
+                        enemy2.Shot_on_Enemy(enemy2, tank.Damage);
+
+                        Thread.Sleep(1000);
+
+                        if (enemy2.HP == 0)
+                        {
+                            Console.WriteLine($"{enemy2.Name} - уничтожен");
+                        }
+
+                        Thread.Sleep(1000);
+
+                        if (enemy1.HP != 0 && enemy2.HP != 0 && enemy3.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name}, {enemy2.Name} и {enemy3.Name}.");
+                        }
+                        else if (enemy1.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name}.");
+                        }
+                        else if (enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy2.Name}.");
+                        }
+                        else if (enemy3.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy2.Name}.");
+                        }
+                        else if (enemy1.HP != 0 && enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name} и {enemy2.Name}.");
+                        }
+                        else if (enemy1.HP != 0 && enemy3.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name} и {enemy3.Name}.");
+                        }
+                        else if (enemy3.HP != 0 && enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy3.Name} и {enemy2.Name}.");
+                        }
+
+                    }
+                    if (selection_battle == 3)
+                    {
+                        Console.WriteLine("Выстерл!");
+                        Console.WriteLine();
+                        enemy3.Shot_on_Enemy(enemy3, tank.Damage);
+
+                        Thread.Sleep(1000);
+
+                        if (enemy3.HP == 0)
+                        {
+                            Console.WriteLine($"{enemy3.Name} - уничтожен");
+                        }
+
+                        Thread.Sleep(1000);
+
+                        if (enemy1.HP != 0 && enemy2.HP != 0 && enemy3.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name}, {enemy2.Name} и {enemy3.Name}.");
+                        }
+                        else if (enemy1.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name}.");
+                        }
+                        else if (enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy2.Name}.");
+                        }
+                        else if (enemy3.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy2.Name}.");
+                        }
+                        else if (enemy1.HP != 0 && enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name} и {enemy2.Name}.");
+                        }
+                        else if (enemy1.HP != 0 && enemy3.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name} и {enemy3.Name}.");
+                        }
+                        else if (enemy3.HP != 0 && enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy3.Name} и {enemy2.Name}.");
+                        }
+
+                    }
+                    if (selection_battle == 4)
+                    {
+                        Console.WriteLine($"Вы отступили.{tank.Name} выжил. Задача не выполнена.");
+                        Environment.Exit(0);
+                    }
+                    if (selection_battle == 5)
+                    {
+                        Mini_Game_Information(tank);
+                        Console.WriteLine();
+                    }
+
+                }
+                Console.WriteLine("Противники были уничтожены, задание выполнено!");
+            }
+            if(number_of_combat_forces == 4) 
+            {
+                enemy1 = new Platoon_Of_Stormtroopers();
+                enemy2 = new Howitzer();
+                enemy3 = new Platoon_Of_Grenadiers();
+                enemy4 = new Platoon_Of_Grenadiers();
+                int selection_battle;
+
+                Console.WriteLine($"Вы едите по кварталу, командир заметил {enemy1.Name} и {enemy3.Name}");
+                Thread.Sleep(1000);
+                tank.Shot_on_Tank(tank, enemy2.Damage);
+                Console.WriteLine($"Из угла по вам выстрелела {enemy2.Name}.\nВаше здоровья: {tank.HP}");
+                Thread.Sleep(1000);
+
+                while (enemy1.HP != 0 || enemy2.HP != 0 || enemy3.HP != 0 || enemy4.HP != 0) 
+                {
+                    if (tank.HP == 0)
+                    {
+                        Console.WriteLine($"{tank.Name} уничтожен!");
+                        Environment.Exit(0);
+                    }
+
+                    Console.WriteLine();
+                    Console.Write($"Ваши действия:\n 1.Открыть огонь по {enemy1.Name}\n 2.Открыть огонь по {enemy2.Name}\n 3.Открыть огонь по {enemy3.Name}\n 4.Открыть огонь по {enemy4.Name}\n 5.Отступить\n 6.Просмотреть характеристики\nВыбор: ");
+                    selection_battle = Convert.ToInt32(Console.ReadLine());
+
+                    if (selection_battle == 1) 
+                    {
+                        Console.WriteLine("Выстерл!");
+                        Console.WriteLine();
+                        enemy1.Shot_on_Enemy(enemy1, tank.Damage);
+
+                        Thread.Sleep(1000);
+
+                        if (enemy1.HP == 0) 
+                        {
+                            Console.WriteLine($"{enemy1.Name} - уничтожен");
+                        }
+
+                        Thread.Sleep(1000);
+
+                        if(enemy1.HP != 0) 
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name}.");
+                        }
+                        if (enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy2.Name}.");
+                        }
+                        if (enemy3.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy3.Name}.");
+                        }
+                        if (enemy4.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy4.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy4.Name}.");
+                        }
+                    }
+                    if (selection_battle == 2)
+                    {
+                        Console.WriteLine("Выстерл!");
+                        Console.WriteLine();
+                        enemy2.Shot_on_Enemy(enemy2, tank.Damage);
+
+                        Thread.Sleep(1000);
+
+                        if (enemy2.HP == 0)
+                        {
+                            Console.WriteLine($"{enemy2.Name} - уничтожен");
+                        }
+
+                        Thread.Sleep(1000);
+
+                        if (enemy1.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name}.");
+                        }
+                        if (enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy2.Name}.");
+                        }
+                        if (enemy3.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy3.Name}.");
+                        }
+                        if (enemy4.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy4.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy4.Name}.");
+                        }
+                    }
+                    if (selection_battle == 3)
+                    {
+                        Console.WriteLine("Выстерл!");
+                        Console.WriteLine();
+                        enemy3.Shot_on_Enemy(enemy3, tank.Damage);
+
+                        Thread.Sleep(1000);
+
+                        if (enemy3.HP == 0)
+                        {
+                            Console.WriteLine($"{enemy3.Name} - уничтожен");
+                        }
+
+                        Thread.Sleep(1000);
+
+                        if (enemy1.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name}.");
+                        }
+                        if (enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy2.Name}.");
+                        }
+                        if (enemy3.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy3.Name}.");
+                        }
+                        if (enemy4.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy4.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy4.Name}.");
+                        }
+                    }
+                    if (selection_battle == 4)
+                    {
+                        Console.WriteLine("Выстерл!");
+                        Console.WriteLine();
+                        enemy4.Shot_on_Enemy(enemy4, tank.Damage);
+
+                        Thread.Sleep(1000);
+
+                        if (enemy4.HP == 0)
+                        {
+                            Console.WriteLine($"{enemy4.Name} - уничтожен");
+                        }
+
+                        Thread.Sleep(1000);
+
+                        if (enemy1.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy1.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy1.Name}.");
+                        }
+                        if (enemy2.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy2.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy2.Name}.");
+                        }
+                        if (enemy3.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy3.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy3.Name}.");
+                        }
+                        if (enemy4.HP != 0)
+                        {
+                            tank.Shot_on_Tank(tank, enemy4.Damage);
+                            Console.WriteLine($"По вам был призведен выстрел от {enemy4.Name}.");
+                        }
+                    }
+                    if (selection_battle == 5)
+                    {
+                        Console.WriteLine($"Вы отступили.{tank.Name} выжил. Задача не выполнена.");
+                        Environment.Exit(0);
+                    }
+                    if (selection_battle == 6)
+                    {
+                        Mini_Game_Information(tank);
+                        Console.WriteLine();
+                    }
+                }
+                Console.WriteLine("Противники были уничтожены, задание выполнено!");
+            }
+
+                       
         }
         // Карта Берлина
         static void EventBerlin1(Tank tank)
@@ -405,6 +1037,15 @@ namespace Play
             Console.WriteLine("Вы едите к точке A.");
             Thread.Sleep(1000);
             Point_A_Berlin_Tank_Battle(tank);
+        }
+        static void EventBerlin2(Tank tank)
+        {
+            Console.WriteLine("Игра началась! Задача захватить точку Б");
+            Start_Tank(tank);
+            Thread.Sleep(1000);
+            Console.WriteLine("Вы едите к точке Б.");
+            Thread.Sleep(1000);
+            Point_B_Berlin_Tank_Battle(tank);
         }
     }
     
@@ -420,7 +1061,7 @@ namespace Play
             public abstract int Damage { get; protected set; }
             public abstract bool Engine_Сondition { get; protected set; }
 
-            public void Shot(Tank a, int damage)
+            public void Shot_on_Tank(Tank a, int damage)
             {
                 a.HP -= damage;
             }
@@ -612,7 +1253,7 @@ namespace Play
         }
         public class Pz_Kpfw_III : Tank
         {
-            private string _name = "Pz.Kpfw. III ";
+            private string _name = "Pz.Kpfw. III";
             private int _hp = 35;
             private int _damage = 5;
             private bool _engine_condition = true;
@@ -680,6 +1321,132 @@ namespace Play
             { 
                 get => _count_lines; 
                 set => _count_lines = value; 
+            }
+        }
+    }
+
+    namespace Enemys
+    {
+        public abstract class Enemy 
+        {
+            public abstract string Name { get; set; }
+            public abstract int HP { get; protected set; }
+            public abstract int Damage { get; protected set; }
+
+            public void Shot_on_Enemy(Enemy a, int damage)
+            {
+                a.HP -= damage;
+            }
+        }
+        public class Platoon_Of_Stormtroopers : Enemy
+        {
+            private string _name = "Взвод штурмовиков";
+            private int _hp = 20;
+            private int _damage = 5;
+
+            public override string Name
+            {
+                get => _name;
+                set => _name = value;
+            }
+
+            public override int HP
+            {
+                get => _hp;
+                protected set
+                {
+                    if (value < 0)
+                    {
+                        _hp = 0;
+                    }
+                    else
+                    {
+                        _hp = value;
+                    }
+                }
+            }
+
+            public override int Damage
+            {
+                get => _damage;
+                protected set
+                {
+                    _damage = value;
+                }
+            }
+        }
+        public class Howitzer : Enemy
+        {
+            private string _name = "Гаубица";
+            private int _hp = 15;
+            private int _damage = 30;
+
+            public override string Name
+            {
+                get => _name;
+                set => _name = value;
+            }
+
+            public override int HP
+            {
+                get => _hp;
+                protected set
+                {
+                    if (value < 0)
+                    {
+                        _hp = 0;
+                    }
+                    else
+                    {
+                        _hp = value;
+                    }
+                }
+            }
+
+            public override int Damage
+            {
+                get => _damage;
+                protected set
+                {
+                    _damage = value;
+                }
+            }
+        }
+        public class Platoon_Of_Grenadiers : Enemy
+        {
+            private string _name = "Взвод гренадеров";
+            private int _hp = 25;
+            private int _damage = 10;
+
+            public override string Name
+            {
+                get => _name;
+                set => _name = value;
+            }
+
+            public override int HP
+            {
+                get => _hp;
+                protected set
+                {
+                    if (value < 0)
+                    {
+                        _hp = 0;
+                    }
+                    else
+                    {
+                        _hp = value;
+                    }
+                }
+            }
+
+            public override int Damage
+            {
+                get => _damage;
+                protected set
+                {
+                    _damage = value;
+                }
             }
         }
     }
