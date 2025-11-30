@@ -112,6 +112,12 @@ namespace Play
                             EventBerlin2(TankPlayer);
                         }
                         break;
+                    case 3:
+                        if (MapPlayer.Name == "Берлин")
+                        {
+                            EventBerlin3(TankPlayer);
+                        }
+                        break;
                 }
             }
         }
@@ -1024,9 +1030,100 @@ namespace Play
                     }
                 }
                 Console.WriteLine("Противники были уничтожены, задание выполнено!");
-            }
+            }                       
+        }
+        static void Point_C_Berlin_Tank_Battle(Tank tank) 
+        {
+            Random rand = new Random();
+            int selection_player;
 
-                       
+            Console.WriteLine("Проезжая по переулку, командир увидел подлетающий бомбардировщик.");
+            Console.WriteLine("Ваши действия:\n 1.Заехать за храм\n 2.Поехать дальше по переулку");
+            Console.Write("Выбор: ");
+            selection_player = Convert.ToInt32(Console.ReadLine());
+
+            if(selection_player == 1) 
+            {
+                tank.Shot_on_Tank(tank, 40);
+                Console.WriteLine($"Продьезжая, вы наткнулись на мину, ваше здоровье: {tank.HP}");
+
+                if (tank.HP == 0)
+                {
+                    Console.WriteLine($"{tank.Name} уничтожен!");
+                    Environment.Exit(0);
+                }
+
+                Console.WriteLine("Самолет пролетел мимо, вы дальше продолжаете продвигаться к точке.");
+                Console.WriteLine("Ваши действия:\n 1.Проехать по бульвару\n 2.Сделать крюк");
+                Console.Write("Выбор: ");
+                selection_player = Convert.ToInt32(Console.ReadLine());
+
+                if (selection_player == 1) 
+                {
+                    Tank enemy_tank = new Marder_II();
+                    bool tank_on_C1 = false;
+                    bool tank_on_C2 = false;
+
+                    tank.Shot_on_Tank(tank, enemy_tank.Damage);
+                    tank.Turn_Off_The_Engine(tank);
+                    Console.WriteLine($"Проезжая, по бульвару вы наткнулись на {enemy_tank.Name}\nПо вам был сделан выстрел, двигатель заглушен.");
+                    Console.WriteLine("До точки осталось совсем чуть-чуть.");
+                    Console.WriteLine();
+
+                    while (tank_on_C1 == false || tank_on_C2 == false) 
+                    {
+                        if (tank.HP == 0)
+                        {
+                            Console.WriteLine($"{tank.Name} уничтожен!");
+                            Environment.Exit(0);
+                        }
+
+                        Console.Write($"Ваши действия:\n 1.Восстановить двигатель\n 2.Выстрел по {enemy_tank.Name}\n 3.Просмотреть характеристики\nВыбор: ");
+                        selection_player = Convert.ToInt32(Console.ReadLine());
+
+                        if (selection_player == 1) 
+                        {
+                            tank.Turn_On_The_Engine(tank);
+                            Console.WriteLine("Двигатель востановлен, можно ехать.");
+
+                            if(enemy_tank.HP != 0) 
+                            {
+                                tank.Shot_on_Tank(tank, enemy_tank.Damage);
+                                Console.WriteLine($"По вам был призведен выстрел от {enemy_tank.Name}.");
+                            }                                                       
+                        }
+
+                        if(selection_player == 2) 
+                        {
+                            Console.WriteLine("Выстерл!");
+                            Console.WriteLine();
+                            tank.Shot_on_Tank(enemy_tank, tank.Damage);
+
+                            Thread.Sleep(1000);
+
+                            if (enemy_tank.HP == 0)
+                            {
+                                Console.WriteLine($"{enemy_tank.Name} - уничтожен");
+                            }
+                            if (enemy_tank.HP != 0)
+                            {
+                                tank.Shot_on_Tank(tank, enemy_tank.Damage);
+                                Console.WriteLine($"По вам был призведен выстрел от {enemy_tank.Name}.");
+                            }
+                        }
+                    }
+                    Console.WriteLine("Вы добрались на точкке С.");
+                }
+                if(selection_player == 2) 
+                {
+                    Console.WriteLine("Сделав крюк, вы добрвлись до точки С.");
+                }
+            }
+            if (selection_player == 2) 
+            {
+                Console.WriteLine("Поехав дальше по преркеулку, бомбардировщик уничтожил ваш танк.");
+                Environment.Exit(0);
+            }
         }
         // Карта Берлина
         static void EventBerlin1(Tank tank)
@@ -1046,6 +1143,15 @@ namespace Play
             Console.WriteLine("Вы едите к точке Б.");
             Thread.Sleep(1000);
             Point_B_Berlin_Tank_Battle(tank);
+        }
+        static void EventBerlin3(Tank tank)
+        {
+            Console.WriteLine("Игра началась! Задача захватить точку C");
+            Start_Tank(tank);
+            Thread.Sleep(1000);
+            Console.WriteLine("Вы едите к точке C.");
+            Thread.Sleep(1000);
+            Point_C_Berlin_Tank_Battle(tank);
         }
     }
     
@@ -1070,6 +1176,10 @@ namespace Play
                 a.Engine_Сondition = true;
             }
 
+            public void Turn_Off_The_Engine(Tank a)
+            {
+                a.Engine_Сondition = false;
+            }
         }
 
 
